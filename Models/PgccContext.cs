@@ -10,5 +10,6 @@ namespace PgccApi.Models
         }
 
         public DbSet<NewsItem> NewsItems { get; set; }
+        public DbSet<Rink> Rinks { get; set; }
     }
 }
