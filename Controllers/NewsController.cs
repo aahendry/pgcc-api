@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 using System.Threading.Tasks;
 using PgccApi.Models;
 
@@ -19,7 +20,13 @@ namespace PgccApi.Controllers
 
             if (_context.NewsItems.Count() == 0)
             {
-                _context.NewsItems.Add(new NewsItem { Title = "Example Title", Text = "Example Text", IsVisible = true });
+                _context.NewsItems.Add(new NewsItem { Title = "News Item 1", Text = "10 days ago, something happened...", When = DateTime.UtcNow.AddDays(-10), IsVisible = true });
+                _context.NewsItems.Add(new NewsItem { Title = "News Item 2", Text = "9 days ago, something happened...", When = DateTime.UtcNow.AddDays(-9), IsVisible = true });
+                _context.NewsItems.Add(new NewsItem { Title = "News Item 3", Text = "8 days ago, something happened...", When = DateTime.UtcNow.AddDays(-8), IsVisible = true });
+                _context.NewsItems.Add(new NewsItem { Title = "News Item 4", Text = "A week ago, some stuff happened...", When = DateTime.UtcNow.AddDays(-7), IsVisible = true });
+                _context.NewsItems.Add(new NewsItem { Title = "News Item 5", Text = "4 days ago, some more stuff happened...", When = DateTime.UtcNow.AddDays(-4), IsVisible = true });
+                _context.NewsItems.Add(new NewsItem { Title = "News Item 6", Text = "Yesterday, even more stuff happened...", When = DateTime.UtcNow.AddDays(-1), IsVisible = true });
+                _context.NewsItems.Add(new NewsItem { Title = "News Item 7", Text = "Today, even more stuff happened, but this time it took a lot more words to explain what exactly happened. This meant that the text was very long.", When = DateTime.UtcNow.AddHours(-1), IsVisible = true });
                 _context.SaveChanges();
             }
         }
@@ -28,7 +35,7 @@ namespace PgccApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<NewsItem>>> GetAll()
         {
-            return await _context.NewsItems.ToListAsync();
+            return await _context.NewsItems.OrderByDescending(o => o.When).ToListAsync();
         }
 
         // GET: api/News/5
