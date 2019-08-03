@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -121,6 +122,7 @@ namespace PgccApi.Controllers
         }
 
         // GET: api/Rinks/Winning
+        [Authorize]
         [HttpGet("winning")]
         public async Task<ActionResult<IEnumerable<Rink>>> GetAllWinning(string competition)
         {
