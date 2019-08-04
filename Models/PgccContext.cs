@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using PgccApi.Entities;
 
 namespace PgccApi.Models
 {

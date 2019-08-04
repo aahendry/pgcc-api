@@ -5,6 +5,7 @@ using System.Linq;
 using System;
 using System.Threading.Tasks;
 using PgccApi.Models;
+using PgccApi.Entities;
 
 namespace PgccApi.Controllers
 {

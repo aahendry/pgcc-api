@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using PgccApi.Models;
 using PgccApi.Services;
+using Microsoft.AspNetCore.Cors;
 
 namespace PgccApi.Controllers
 {
@@ -16,11 +17,13 @@ namespace PgccApi.Controllers
         {
             _userService = userService;
         }
-
+        
+        [EnableCors("_myAllowSpecificOrigins")]
         [AllowAnonymous]
         [HttpPost("login")]
         public IActionResult Login([FromBody]LoginModel userParam)
         {
+            var x = ModelState;
             var user = _userService.Authenticate(userParam.Username, userParam.Password);
 
             if (user == null)

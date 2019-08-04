@@ -1,6 +1,6 @@
-namespace PgccApi.Models
+namespace PgccApi.Entities
 {
-    public class Rink : ModelBase
+    public class Rink : EntityBase
     {
         public Season Season { get; set; }
         public Competition Competition { get; set; }

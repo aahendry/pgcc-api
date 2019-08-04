@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PgccApi.Models;
 using PgccApi.Helpers;
+using PgccApi.Entities;
 
 namespace PgccApi.Services
 {

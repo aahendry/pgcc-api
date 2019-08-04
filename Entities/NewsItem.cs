@@ -1,8 +1,8 @@
 using System;
 
-namespace PgccApi.Models
+namespace PgccApi.Entities
 {
-    public class NewsItem : ModelBase
+    public class NewsItem : EntityBase
     {
         public string Title { get; set; }
         public string Text { get; set; }
