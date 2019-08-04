@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Cors;
 
 namespace PgccApi.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -18,8 +17,6 @@ namespace PgccApi.Controllers
             _userService = userService;
         }
         
-        [EnableCors("_myAllowSpecificOrigins")]
-        [AllowAnonymous]
         [HttpPost("login")]
         public IActionResult Login([FromBody]LoginModel userParam)
         {

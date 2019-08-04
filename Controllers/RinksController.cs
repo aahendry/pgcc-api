@@ -123,14 +123,20 @@ namespace PgccApi.Controllers
         }
 
         // GET: api/Rinks/Winning
-        [Authorize]
         [HttpGet("winning")]
-        public async Task<ActionResult<IEnumerable<Rink>>> GetAllWinning(string competition)
+        public async Task<ActionResult<IEnumerable<RinkModel>>> GetAllWinning(string competition)
         {
             return await _context.Rinks
             .Where(o => o.Competition.Name.ToLower() == competition.ToLower())
             .Where(o => o.WasWinningRink == true)
-            .OrderByDescending(o => o.Season)
+            .OrderByDescending(o => o.Season.Name)
+            .Select(o => new RinkModel{
+                Season = o.Season.Name,
+                Skip = o.Skip,
+                Third = o.Third,
+                Second = o.Second,
+                Lead = o.Lead
+            })
             .ToListAsync();
         }
     }
