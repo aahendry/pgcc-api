@@ -57,6 +57,7 @@ namespace PgccApi.Controllers
         [HttpPost]
         public async Task<ActionResult<NewsItem>> Post(NewsItem item)
         {
+            item.When = DateTime.UtcNow;
             _context.NewsItems.Add(item);
             await _context.SaveChangesAsync();
 
