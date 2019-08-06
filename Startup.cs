@@ -41,7 +41,7 @@ namespace PgccApi
                 });
             });
 
-            services.AddDbContext<PgccContext>(opt => opt.UseInMemoryDatabase("PgccDb"));
+            services.AddDbContext<PgccContext>(opt => opt.UseMySQL(Configuration.GetConnectionString("pgcc")));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // configure strongly typed settings objects
