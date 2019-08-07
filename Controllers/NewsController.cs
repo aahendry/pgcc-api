@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -33,6 +34,14 @@ namespace PgccApi.Controllers
         }
 
         // GET: api/News
+        [HttpGet("visible")]
+        public async Task<ActionResult<IEnumerable<NewsItem>>> GetAllVisible()
+        {
+            return await _context.NewsItems.Where(o => o.IsVisible).OrderByDescending(o => o.When).ToListAsync();
+        }
+
+        // GET: api/News
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<NewsItem>>> GetAll()
         {
@@ -40,6 +49,7 @@ namespace PgccApi.Controllers
         }
 
         // GET: api/News/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<NewsItem>> Get(long id)
         {
@@ -54,6 +64,7 @@ namespace PgccApi.Controllers
         }
 
         // POST: api/News
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<NewsItem>> Post(NewsItem item)
         {
@@ -65,6 +76,7 @@ namespace PgccApi.Controllers
         }
 
         // PUT: api/News/5
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(long id, NewsItem item)
         {
@@ -80,6 +92,7 @@ namespace PgccApi.Controllers
         }
 
         // DELETE: api/News/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
