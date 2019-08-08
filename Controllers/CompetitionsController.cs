@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 using System.Threading.Tasks;
 using PgccApi.Models;
 using PgccApi.Entities;
@@ -12,61 +11,52 @@ namespace PgccApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class NewsController : ControllerBase
+    public class CompetitionsController : ControllerBase
     {
         private readonly PgccContext _context;
 
-        public NewsController(PgccContext context)
+        public CompetitionsController(PgccContext context)
         {
             _context = context;
         }
 
-        // GET: api/News
-        [HttpGet("visible")]
-        public async Task<ActionResult<IEnumerable<NewsItem>>> GetAllVisible()
-        {
-            return await _context.NewsItems.Where(o => o.IsVisible).OrderByDescending(o => o.When).ToListAsync();
-        }
-
-        // GET: api/News
-        [Authorize]
+        // GET: api/Competitions
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<NewsItem>>> GetAll()
+        public async Task<ActionResult<IEnumerable<Competition>>> GetAll()
         {
-            return await _context.NewsItems.OrderByDescending(o => o.When).ToListAsync();
+            return await _context.Competitions.OrderBy(o => o.Name).ToListAsync();
         }
 
-        // GET: api/News/5
+        // GET: api/Competitions/5
         [Authorize]
         [HttpGet("{id}")]
-        public async Task<ActionResult<NewsItem>> Get(long id)
+        public async Task<ActionResult<Competition>> Get(long id)
         {
-            var newsItem = await _context.NewsItems.FindAsync(id);
+            var competition = await _context.Competitions.FindAsync(id);
 
-            if (newsItem == null)
+            if (competition == null)
             {
                 return NotFound();
             }
 
-            return newsItem;
+            return competition;
         }
 
-        // POST: api/News
+        // POST: api/Competitions
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<NewsItem>> Post(NewsItem item)
+        public async Task<ActionResult<Competition>> Post(Competition item)
         {
-            item.When = DateTime.UtcNow;
-            _context.NewsItems.Add(item);
+            _context.Competitions.Add(item);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
         }
 
-        // PUT: api/News/5
+        // PUT: api/Competitions/5
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(long id, NewsItem item)
+        public async Task<IActionResult> Put(long id, Competition item)
         {
             if (id != item.Id)
             {
@@ -79,19 +69,19 @@ namespace PgccApi.Controllers
             return NoContent();
         }
 
-        // DELETE: api/News/5
+        // DELETE: api/Competitions/5
         [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
-            var item = await _context.NewsItems.FindAsync(id);
+            var item = await _context.Competitions.FindAsync(id);
 
             if (item == null)
             {
                 return NotFound();
             }
 
-            _context.NewsItems.Remove(item);
+            _context.Competitions.Remove(item);
             await _context.SaveChangesAsync();
 
             return NoContent();

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -5,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using PgccApi.Models;
 using PgccApi.Entities;
+using System;
 
 namespace PgccApi.Controllers
 {
@@ -17,78 +19,46 @@ namespace PgccApi.Controllers
         public RinksController(PgccContext context)
         {
             _context = context;
-
-            // if (_context.Rinks.Count() == 0)
-            // {
-            //     var season16 = new Season { Name = "2016/2017" };
-            //     _context.Seasons.Add(season16);
-            //     var season17 = new Season { Name = "2017/2018" };
-            //     _context.Seasons.Add(season17);
-            //     var season18 = new Season { Name = "2018/2019" };
-            //     _context.Seasons.Add(season18);
-            //     var season19 = new Season { Name = "2019/2020" };
-            //     _context.Seasons.Add(season19);
-            //     var gourdie = new Competition { Name = "Gourdie" };
-            //     var derby = new Competition { Name = "Derby" };
-            //     _context.Competitions.Add(gourdie);
-            //     _context.Competitions.Add(derby);
-
-            //     _context.SaveChanges();
-
-            //     _context.Rinks.Add(new Rink { Season = season19, Competition = gourdie, Skip = "J Service", Third = "R Leishman", Second = "N Caskie", Lead = "J Taylor" });
-            //     _context.Rinks.Add(new Rink { Season = season19, Competition = gourdie, Skip = "F Gray", Third = "A Thomson", Second = "B Murray", Lead = "S Bonatti" });
-            //     _context.Rinks.Add(new Rink { Season = season19, Competition = gourdie, Skip = "J Service", Third = "R Leishman", Second = "N Caskie", Lead = "J Taylor" });
-            //     _context.Rinks.Add(new Rink { Season = season19, Competition = gourdie, Skip = "F Gray", Third = "A Thomson", Second = "B Murray", Lead = "S Bonatti" });
-            //     _context.Rinks.Add(new Rink { Season = season19, Competition = gourdie, Skip = "J Service", Third = "R Leishman", Second = "N Caskie", Lead = "J Taylor" });
-            //     _context.Rinks.Add(new Rink { Season = season19, Competition = gourdie, Skip = "F Gray", Third = "A Thomson", Second = "B Murray", Lead = "S Bonatti" });
-            //     _context.Rinks.Add(new Rink { Season = season19, Competition = gourdie, Skip = "J Service", Third = "R Leishman", Second = "N Caskie", Lead = "J Taylor" });
-            //     _context.Rinks.Add(new Rink { Season = season19, Competition = gourdie, Skip = "F Gray", Third = "A Thomson", Second = "B Murray", Lead = "S Bonatti" });
-
-            //     _context.Rinks.Add(new Rink { Season = season19, Competition = derby, Skip = "J Service", Third = "R Leishman", Second = "N Caskie", Lead = "J Taylor" });
-            //     _context.Rinks.Add(new Rink { Season = season19, Competition = derby, Skip = "F Gray", Third = "A Thomson", Second = "B Murray", Lead = "S Bonatti" });
-            //     _context.Rinks.Add(new Rink { Season = season19, Competition = derby, Skip = "J Service", Third = "R Leishman", Second = "N Caskie", Lead = "J Taylor" });
-            //     _context.Rinks.Add(new Rink { Season = season19, Competition = derby, Skip = "F Gray", Third = "A Thomson", Second = "B Murray", Lead = "S Bonatti" });
-            //     _context.Rinks.Add(new Rink { Season = season19, Competition = derby, Skip = "J Service", Third = "R Leishman", Second = "N Caskie", Lead = "J Taylor" });
-            //     _context.Rinks.Add(new Rink { Season = season19, Competition = derby, Skip = "F Gray", Third = "A Thomson", Second = "B Murray", Lead = "S Bonatti" });
-            //     _context.Rinks.Add(new Rink { Season = season19, Competition = derby, Skip = "J Service", Third = "R Leishman", Second = "N Caskie", Lead = "J Taylor" });
-            //     _context.Rinks.Add(new Rink { Season = season19, Competition = derby, Skip = "F Gray", Third = "A Thomson", Second = "B Murray", Lead = "S Bonatti" });
-                
-            //     _context.Rinks.Add(new Rink { Season = season16, WasWinningRink = true, Competition = gourdie, Skip = "C Service", Third = "R Leishman", Second = "N Caskie", Lead = "J Taylor" });
-            //     _context.Rinks.Add(new Rink { Season = season17, WasWinningRink = true, Competition = gourdie, Skip = "B Service", Third = "R Leishman", Second = "N Caskie", Lead = "J Taylor" });
-            //     _context.Rinks.Add(new Rink { Season = season18, WasWinningRink = true, Competition = gourdie, Skip = "A Service", Third = "R Leishman", Second = "N Caskie", Lead = "J Taylor" });
-                
-            //     _context.Rinks.Add(new Rink { Season = season16, WasWinningRink = true, Competition = derby, Skip = "C Service", Third = "R Leishman", Second = "N Caskie", Lead = "J Taylor" });
-            //     _context.Rinks.Add(new Rink { Season = season17, WasWinningRink = true, Competition = derby, Skip = "B Service", Third = "R Leishman", Second = "N Caskie", Lead = "J Taylor" });
-            //     _context.Rinks.Add(new Rink { Season = season18, WasWinningRink = true, Competition = derby, Skip = "A Service", Third = "R Leishman", Second = "N Caskie", Lead = "J Taylor" });
-                
-            //     _context.SaveChanges();
-            // }
         }
 
         // GET: api/Rinks
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RinkModel>>> GetAll(string competition, long? season = null)
+        public async Task<ActionResult<IEnumerable<RinkModel>>> GetAll(long? competitionId, long? seasonId)
         {
-            if (season == null)
+            if (seasonId == null)
             {
-                season = _context.Seasons.OrderByDescending(o => o.Name).FirstOrDefault()?.Id;
+                seasonId = _context.Seasons.OrderByDescending(o => o.Name).FirstOrDefault()?.Id;
+
+                if(seasonId == null){
+                    throw new Exception("No Seasons found.");
+                }
             }
 
-            return await _context.Rinks
-            .Where(o => o.Season.Id == season)
-            .Where(o => o.Competition.Name.ToLower() == competition.ToLower())
-            .OrderBy(o => o.Skip)
-            .Select(o => new RinkModel{
-                Season = o.Season.Name,
-                Skip = o.Skip,
-                Third = o.Third,
-                Second = o.Second,
-                Lead = o.Lead
-            })
-            .ToListAsync();
+            var query = _context.Rinks.Where(o => o.Season.Id == seasonId);
+
+            if (competitionId != null)
+            {
+                query = query.Where(o => o.Competition.Id == competitionId);
+            }
+
+            return await query
+                .OrderBy(o => o.Competition)
+                .ThenBy(o => o.Skip)
+                .Select(o => new RinkModel
+                {
+                    Id = o.Id,
+                    Season = o.Season.Name,
+                    Competition = o.Competition.Name,
+                    Skip = o.Skip,
+                    Third = o.Third,
+                    Second = o.Second,
+                    Lead = o.Lead
+                })
+                .ToListAsync();
         }
 
         // GET: api/Rinks/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<Rink>> Get(long id)
         {
@@ -103,9 +73,11 @@ namespace PgccApi.Controllers
         }
 
         // POST: api/Rinks
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Rink>> Post(Rink item)
         {
+            // TODO - Check WasWinningRink is unique
             _context.Rinks.Add(item);
             await _context.SaveChangesAsync();
 
@@ -113,6 +85,7 @@ namespace PgccApi.Controllers
         }
 
         // PUT: api/Rinks/5
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(long id, Rink item)
         {
@@ -121,6 +94,7 @@ namespace PgccApi.Controllers
                 return BadRequest();
             }
 
+            // TODO - Check WasWinningRink is unique
             _context.Entry(item).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
@@ -128,17 +102,18 @@ namespace PgccApi.Controllers
         }
 
         // DELETE: api/Rinks/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
-            var item = await _context.NewsItems.FindAsync(id);
+            var item = await _context.Rinks.FindAsync(id);
 
             if (item == null)
             {
                 return NotFound();
             }
 
-            _context.NewsItems.Remove(item);
+            _context.Rinks.Remove(item);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -151,7 +126,8 @@ namespace PgccApi.Controllers
             var x = await _context.Rinks
             .Where(o => o.Competition.Name.ToLower() == competition.ToLower() && o.WasWinningRink == true)
             .OrderByDescending(o => o.Season.Name)
-            .Select(o => new RinkModel{
+            .Select(o => new RinkModel
+            {
                 Season = o.Season.Name,
                 Skip = o.Skip,
                 Third = o.Third,

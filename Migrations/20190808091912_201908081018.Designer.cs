@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PgccApi.Models;
 
 namespace PgccApi.Migrations
 {
     [DbContext(typeof(PgccContext))]
-    partial class PgccContextModelSnapshot : ModelSnapshot
+    [Migration("20190808091912_201908081018")]
+    partial class _201908081018
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

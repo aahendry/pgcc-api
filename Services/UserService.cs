@@ -43,17 +43,19 @@ namespace PgccApi.Services
             // authentication successful so generate jwt token
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.TokenSecret);
+            var tokenExpiry = DateTime.UtcNow.AddHours(2);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[] 
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddHours(2),
+                Expires = tokenExpiry,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             user.Token = tokenHandler.WriteToken(token);
+            user.TokenExpiry = tokenExpiry;
 
             // remove password before returning
             user.Password = null;

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 using System.Threading.Tasks;
 using PgccApi.Models;
 using PgccApi.Entities;
@@ -12,61 +11,59 @@ namespace PgccApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class NewsController : ControllerBase
+    public class SeasonsController : ControllerBase
     {
         private readonly PgccContext _context;
 
-        public NewsController(PgccContext context)
+        public SeasonsController(PgccContext context)
         {
             _context = context;
         }
 
-        // GET: api/News
-        [HttpGet("visible")]
-        public async Task<ActionResult<IEnumerable<NewsItem>>> GetAllVisible()
+        // GET: api/Seasons/current
+        [HttpGet("current")]
+        public async Task<ActionResult<Season>> GetCurrent()
         {
-            return await _context.NewsItems.Where(o => o.IsVisible).OrderByDescending(o => o.When).ToListAsync();
+            return await _context.Seasons.OrderByDescending(o => o.Name).FirstOrDefaultAsync();
         }
 
-        // GET: api/News
-        [Authorize]
+        // GET: api/Seasons
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<NewsItem>>> GetAll()
+        public async Task<ActionResult<IEnumerable<Season>>> GetAll()
         {
-            return await _context.NewsItems.OrderByDescending(o => o.When).ToListAsync();
+            return await _context.Seasons.OrderByDescending(o => o.Name).ToListAsync();
         }
 
-        // GET: api/News/5
+        // GET: api/Seasons/5
         [Authorize]
         [HttpGet("{id}")]
-        public async Task<ActionResult<NewsItem>> Get(long id)
+        public async Task<ActionResult<Season>> Get(long id)
         {
-            var newsItem = await _context.NewsItems.FindAsync(id);
+            var season = await _context.Seasons.FindAsync(id);
 
-            if (newsItem == null)
+            if (season == null)
             {
                 return NotFound();
             }
 
-            return newsItem;
+            return season;
         }
 
-        // POST: api/News
+        // POST: api/Seasons
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<NewsItem>> Post(NewsItem item)
+        public async Task<ActionResult<Season>> Post(Season item)
         {
-            item.When = DateTime.UtcNow;
-            _context.NewsItems.Add(item);
+            _context.Seasons.Add(item);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
         }
 
-        // PUT: api/News/5
+        // PUT: api/Seasons/5
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(long id, NewsItem item)
+        public async Task<IActionResult> Put(long id, Season item)
         {
             if (id != item.Id)
             {
@@ -79,19 +76,19 @@ namespace PgccApi.Controllers
             return NoContent();
         }
 
-        // DELETE: api/News/5
+        // DELETE: api/Seasons/5
         [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)
         {
-            var item = await _context.NewsItems.FindAsync(id);
+            var item = await _context.Seasons.FindAsync(id);
 
             if (item == null)
             {
                 return NotFound();
             }
 
-            _context.NewsItems.Remove(item);
+            _context.Seasons.Remove(item);
             await _context.SaveChangesAsync();
 
             return NoContent();

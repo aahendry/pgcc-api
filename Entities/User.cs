@@ -1,3 +1,5 @@
+using System;
+
 namespace PgccApi.Entities
 {
     public class User : EntityBase
@@ -7,5 +9,6 @@ namespace PgccApi.Entities
         public string Username { get; set; }
         public string Password { get; set; }
         public string Token { get; set; }
+        public DateTime TokenExpiry { get; set; }
     }
 }
