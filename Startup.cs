@@ -85,7 +85,6 @@ namespace PgccApi
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseCors(MyAllowSpecificOrigins);
             app.UseMvc();
