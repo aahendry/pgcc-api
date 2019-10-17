@@ -10,6 +10,7 @@ namespace PgccApi.Models
         {
         }
 
+        public DbSet<User> Users { get; set; }
         public DbSet<NewsItem> NewsItems { get; set; }
         public DbSet<Rink> Rinks { get; set; }
         public DbSet<Season> Seasons { get; set; }

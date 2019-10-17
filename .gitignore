@@ -41,3 +41,5 @@
 /obj/PgccApi.csproj.nuget.g.props
 /obj/PgccApi.csproj.nuget.g.targets
 /obj/project.assets.json
+/.vs/PgccApi/config
+/PgccApi.csproj.user

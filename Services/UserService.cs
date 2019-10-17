@@ -19,22 +19,18 @@ namespace PgccApi.Services
 
     public class UserService : IUserService
     {
-        // TODO - users hardcoded for simplicity, store in a db with hashed passwords in production applications
-        private List<User> _users = new List<User>
-        { 
-            new User { Id = 1, FirstName = "Test", LastName = "User", Username = "test", Password = "test" } 
-        };
-
+        private readonly PgccContext _context;
         private readonly AppSettings _appSettings;
 
-        public UserService(IOptions<AppSettings> appSettings)
+        public UserService(PgccContext context, IOptions<AppSettings> appSettings)
         {
+            _context = context;
             _appSettings = appSettings.Value;
         }
 
         public User Authenticate(string username, string password)
         {
-            var user = _users.SingleOrDefault(x => x.Username == username && x.Password == password);
+            var user = _context.Users.SingleOrDefault(x => x.Username == username && x.Password == password);
 
             // return null if user not found
             if (user == null)

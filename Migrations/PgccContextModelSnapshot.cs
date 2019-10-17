@@ -88,6 +88,28 @@ namespace PgccApi.Migrations
                     b.ToTable("Seasons");
                 });
 
+            modelBuilder.Entity("PgccApi.Entities.User", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("FirstName");
+
+                    b.Property<string>("LastName");
+
+                    b.Property<string>("Password");
+
+                    b.Property<string>("Token");
+
+                    b.Property<DateTime?>("TokenExpiry");
+
+                    b.Property<string>("Username");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("PgccApi.Entities.Rink", b =>
                 {
                     b.HasOne("PgccApi.Entities.Competition", "Competition")
