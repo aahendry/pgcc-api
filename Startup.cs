@@ -33,8 +33,8 @@ namespace PgccApi
                 builder =>
                 {
                     builder
-                    //.WithOrigins("http://localhost:8080")
-                    .AllowAnyOrigin()
+                    .WithOrigins("https://www.portglasgowcurlingclub.co.uk", "https://portglasgowcurlingclub.co.uk", "http://localhost:8080")
+                    //.AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();
