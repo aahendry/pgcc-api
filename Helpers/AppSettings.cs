@@ -4,6 +4,7 @@ namespace PgccApi.Helpers
     {
         public string TokenSecret { get; set; }
 
+        public bool SendEmailForEnquiries { get; set; }
         public string SmtpServer { get; set; }
         public int SmtpPort { get; set; }
         public string SmtpUsername { get; set; }
