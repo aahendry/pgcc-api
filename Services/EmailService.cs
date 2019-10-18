@@ -25,32 +25,35 @@ namespace PgccApi.Services
 
         public void SendEnquiryEmail(Enquiry enquiry)
         {
-            using (var message = new MailMessage())
+            if (SendEmailForEnquiries)
             {
-                message.To.Add(new MailAddress(_appSettings.SmtpToAddress, _appSettings.SmtpToAlias));
-                message.From = new MailAddress(_appSettings.SmtpFromAddress, _appSettings.SmtpFromAlias);
-                message.Subject = "New PGCC Enquiry";
-                message.IsBodyHtml = false;
-                message.Body = "Hi,\r\n" +
-                    "\r\n" +
-                    $"Someone has sent a new enquiry from the PGCC website.\r\n" +
-                    $"\r\n" +
-                    $"Their email address is {enquiry.Email} .\r\n" +
-                    $"Their name is {enquiry.Name} .\r\n" +
-                    $"Their message is:\r\n" +
-                    $"{enquiry.Message}\r\n" +
-                    $"\r\n" +
-                    $"Cheers,\r\n" +
-                    $"portglasgowcurlingclub.co.uk";
-
-                using (var client = new SmtpClient(_appSettings.SmtpServer))
+                using (var message = new MailMessage())
                 {
-                    client.Port = _appSettings.SmtpPort;
-                    client.EnableSsl = true;
-                    client.DeliveryMethod = SmtpDeliveryMethod.Network;
-                    client.UseDefaultCredentials = false;
-                    client.Credentials = new NetworkCredential(_appSettings.SmtpUsername, _appSettings.SmtpPassword);
-                    client.Send(message);
+                    message.To.Add(new MailAddress(_appSettings.SmtpToAddress, _appSettings.SmtpToAlias));
+                    message.From = new MailAddress(_appSettings.SmtpFromAddress, _appSettings.SmtpFromAlias);
+                    message.Subject = "New PGCC Enquiry";
+                    message.IsBodyHtml = false;
+                    message.Body = "Hi,\r\n" +
+                        "\r\n" +
+                        $"Someone has sent a new enquiry from the PGCC website.\r\n" +
+                        $"\r\n" +
+                        $"Their email address is {enquiry.Email} .\r\n" +
+                        $"Their name is {enquiry.Name} .\r\n" +
+                        $"Their message is:\r\n" +
+                        $"{enquiry.Message}\r\n" +
+                        $"\r\n" +
+                        $"Cheers,\r\n" +
+                        $"portglasgowcurlingclub.co.uk";
+
+                    using (var client = new SmtpClient(_appSettings.SmtpServer))
+                    {
+                        client.Port = _appSettings.SmtpPort;
+                        client.EnableSsl = true;
+                        client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                        client.UseDefaultCredentials = false;
+                        client.Credentials = new NetworkCredential(_appSettings.SmtpUsername, _appSettings.SmtpPassword);
+                        client.Send(message);
+                    }
                 }
             }
         }
