@@ -28,6 +28,24 @@ namespace PgccApi.Migrations
                     b.ToTable("Competitions");
                 });
 
+            modelBuilder.Entity("PgccApi.Entities.Enquiry", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Email");
+
+                    b.Property<string>("Message");
+
+                    b.Property<string>("Name");
+
+                    b.Property<DateTime>("When");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Enquiries");
+                });
+
             modelBuilder.Entity("PgccApi.Entities.NewsItem", b =>
                 {
                     b.Property<long>("Id")

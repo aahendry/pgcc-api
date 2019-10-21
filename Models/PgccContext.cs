@@ -15,5 +15,6 @@ namespace PgccApi.Models
         public DbSet<Rink> Rinks { get; set; }
         public DbSet<Season> Seasons { get; set; }
         public DbSet<Competition> Competitions { get; set; }
+        public DbSet<Enquiry> Enquiries { get; set; }
     }
 }
