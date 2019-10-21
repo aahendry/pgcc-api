@@ -13,5 +13,8 @@ namespace PgccApi.Helpers
         public string SmtpFromAlias { get; set; }
         public string SmtpToAddress { get; set; }
         public string SmtpToAlias { get; set; }
+
+        public bool UseRecaptcha { get; set; }
+        public string RecaptchaSecret { get; set; }
     }
 }

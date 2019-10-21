@@ -25,7 +25,7 @@ namespace PgccApi.Services
 
         public void SendEnquiryEmail(Enquiry enquiry)
         {
-            if (SendEmailForEnquiries)
+            if (_appSettings.SendEmailForEnquiries)
             {
                 using (var message = new MailMessage())
                 {

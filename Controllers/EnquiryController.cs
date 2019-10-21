@@ -17,11 +17,13 @@ namespace PgccApi.Controllers
     {
         private readonly PgccContext _context;
         private readonly IEmailService _emailService;
+        private readonly IEnquiryService _enquiryService;
 
-        public EnquiryController(PgccContext context, IEmailService emailService)
+        public EnquiryController(PgccContext context, IEmailService emailService, IEnquiryService enquiryService)
         {
             _context = context;
             _emailService = emailService;
+            _enquiryService = enquiryService;
         }
 
         // GET: api/Enquiry
@@ -34,15 +36,23 @@ namespace PgccApi.Controllers
 
         // POST: api/Enquiry
         [HttpPost]
-        public async Task<ActionResult<Enquiry>> Post(Enquiry item)
+        public async Task<ActionResult<Enquiry>> Post(EnquiryModel item)
         {
-            item.When = DateTime.UtcNow;
-            _context.Enquiries.Add(item);
-            await _context.SaveChangesAsync();
+            var enquiry = new Enquiry() { Id = item.Id, Name = item.Name, Email = item.Email, Message = item.Message, When = DateTime.UtcNow };
+
+            if (_enquiryService.Validate(item.RecaptchaToken))
+            {
+                _context.Enquiries.Add(enquiry);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                return BadRequest();
+            }
 
             try
             {
-                _emailService.SendEnquiryEmail(item);
+                _enquiryService.ProcessEnquiry(enquiry);
             }
             catch
             {
