@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using PgccApi.Models;
 using PgccApi.Helpers;
 using PgccApi.Services;
+using AutoMapper;
 
 namespace PgccApi
 {
@@ -42,6 +43,7 @@ namespace PgccApi
             });
 
             services.AddDbContext<PgccContext>(opt => opt.UseMySQL(Configuration.GetConnectionString("pgcc")));
+            services.AddAutoMapper(typeof(Startup));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // configure strongly typed settings objects
