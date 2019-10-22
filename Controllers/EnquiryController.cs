@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using PgccApi.Models;
 using PgccApi.Entities;
 using PgccApi.Services;
+using AutoMapper;
 
 namespace PgccApi.Controllers
 {
@@ -16,12 +17,14 @@ namespace PgccApi.Controllers
     public class EnquiryController : ControllerBase
     {
         private readonly PgccContext _context;
+        private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
         private readonly IEnquiryService _enquiryService;
 
-        public EnquiryController(PgccContext context, IEmailService emailService, IEnquiryService enquiryService)
+        public EnquiryController(PgccContext context, IMapper mapper, IEmailService emailService, IEnquiryService enquiryService)
         {
             _context = context;
+            _mapper = mapper;
             _emailService = emailService;
             _enquiryService = enquiryService;
         }
@@ -38,7 +41,7 @@ namespace PgccApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Enquiry>> Post(EnquiryModel item)
         {
-            var enquiry = new Enquiry() { Id = item.Id, Name = item.Name, Email = item.Email, Message = item.Message, When = DateTime.UtcNow };
+            var enquiry = _mapper.Map<Enquiry>(item); //new Enquiry() { Id = 0, Name = item.Name, Email = item.Email, Message = item.Message, When = DateTime.UtcNow };
 
             if (_enquiryService.Validate(item.RecaptchaToken))
             {
