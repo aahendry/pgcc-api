@@ -41,7 +41,7 @@ namespace PgccApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Enquiry>> Post(EnquiryModel item)
         {
-            var enquiry = _mapper.Map<Enquiry>(item); //new Enquiry() { Id = 0, Name = item.Name, Email = item.Email, Message = item.Message, When = DateTime.UtcNow };
+            var enquiry = _mapper.Map<Enquiry>(item);
 
             if (_enquiryService.Validate(item.RecaptchaToken))
             {

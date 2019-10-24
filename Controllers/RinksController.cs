@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PgccApi.Models;
+using PgccApi.Models.ViewModels;
 using PgccApi.Entities;
 using System;
+using AutoMapper;
 
 namespace PgccApi.Controllers
 {
@@ -15,15 +17,17 @@ namespace PgccApi.Controllers
     public class RinksController : ControllerBase
     {
         private readonly PgccContext _context;
+        private readonly IMapper _mapper;
 
-        public RinksController(PgccContext context)
+        public RinksController(PgccContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Rinks
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RinkModel>>> GetAll(long? competitionId, long? seasonId)
+        public async Task<ActionResult<IEnumerable<RinkViewModel>>> GetAll(long? competitionId, long? seasonId)
         {
             if (seasonId == null)
             {
@@ -41,20 +45,11 @@ namespace PgccApi.Controllers
                 query = query.Where(o => o.Competition.Id == competitionId);
             }
 
-            return await query
+            var rinks = query
                 .OrderBy(o => o.Competition)
-                .ThenBy(o => o.Skip)
-                .Select(o => new RinkModel
-                {
-                    Id = o.Id,
-                    Season = o.Season.Name,
-                    Competition = o.Competition.Name,
-                    Skip = o.Skip,
-                    Third = o.Third,
-                    Second = o.Second,
-                    Lead = o.Lead
-                })
-                .ToListAsync();
+                .ThenBy(o => o.Skip);
+
+            return await _mapper.ProjectTo<RinkViewModel>(rinks).ToListAsync();
         }
 
         // GET: api/Rinks/5
@@ -121,22 +116,13 @@ namespace PgccApi.Controllers
 
         // GET: api/Rinks/Winning
         [HttpGet("winning")]
-        public async Task<ActionResult<IEnumerable<RinkModel>>> GetAllWinning(string competition)
+        public async Task<ActionResult<IEnumerable<RinkViewModel>>> GetAllWinning(string competition)
         {
-            var x = await _context.Rinks
+            var rinks = _context.Rinks
             .Where(o => o.Competition.Name.ToLower() == competition.ToLower() && o.WasWinningRink == true)
-            .OrderByDescending(o => o.Season.Name)
-            .Select(o => new RinkModel
-            {
-                Season = o.Season.Name,
-                Skip = o.Skip,
-                Third = o.Third,
-                Second = o.Second,
-                Lead = o.Lead
-            })
-            .ToListAsync();
+            .OrderByDescending(o => o.Season.Name);
 
-            return x;
+            return await _mapper.ProjectTo<RinkViewModel>(rinks).ToListAsync();
         }
     }
 }
