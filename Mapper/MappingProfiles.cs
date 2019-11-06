@@ -2,6 +2,8 @@
 using PgccApi.Entities;
 using PgccApi.Models;
 using PgccApi.Models.ViewModels;
+using System;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace PgccApi.Mapper
 {
@@ -14,10 +16,17 @@ namespace PgccApi.Mapper
                 .ForMember(o => o.Id, opt => opt.Ignore())
                 .ForMember(o => o.When, opt => opt.Ignore());
 
+            CreateMap<CompetitionPostModel, Competition>()
+                .ForMember(o => o.Id, opt => opt.Ignore());
+
             // Outbound
-            CreateMap<Rink, RinkViewModel>()
-                .ForMember(o => o.Season, opt => opt.MapFrom(src => src.Season.Name))
-                .ForMember(o => o.Competition, opt => opt.MapFrom(src => src.Competition.Name));
+            CreateMap<Competition, CompetitionViewModel>();
+            CreateMap<Enquiry, EnquiryViewModel>();
+            CreateMap<Fixture, FixtureViewModel>();
+            CreateMap<NewsItem, NewsItemViewModel>();
+            CreateMap<Rink, RinkViewModel>();
+            CreateMap<Season, SeasonViewModel>();
+            CreateMap<User, UserViewModel>();
         }
     }
 }

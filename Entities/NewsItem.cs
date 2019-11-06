@@ -8,7 +8,7 @@ namespace PgccApi.Entities
         public string Title { get; set; }
         public string Text { get; set; }
         public DateTime When {get; set; }
-        [Column(TypeName = "bit")]
+        //[Column(TypeName = "bit")]
         public bool IsVisible { get; set; }
     }
 }

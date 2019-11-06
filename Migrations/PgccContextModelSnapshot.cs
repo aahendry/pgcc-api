@@ -21,6 +21,10 @@ namespace PgccApi.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("Blurb");
+
+                    b.Property<bool>("HasLeagueTable");
+
                     b.Property<string>("Name");
 
                     b.HasKey("Id");
@@ -44,6 +48,50 @@ namespace PgccApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Enquiries");
+                });
+
+            modelBuilder.Entity("PgccApi.Entities.Fixture", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("CompetitionId");
+
+                    b.Property<int?>("Ends1");
+
+                    b.Property<int?>("Ends2");
+
+                    b.Property<string>("Round");
+
+                    b.Property<long>("SeasonId");
+
+                    b.Property<int?>("Shots1");
+
+                    b.Property<int?>("Shots2");
+
+                    b.Property<long?>("Team1Id");
+
+                    b.Property<string>("Team1OtherName");
+
+                    b.Property<long?>("Team2Id");
+
+                    b.Property<string>("Team2OtherName");
+
+                    b.Property<DateTime>("When");
+
+                    b.Property<bool>("isFinal");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompetitionId");
+
+                    b.HasIndex("SeasonId");
+
+                    b.HasIndex("Team1Id");
+
+                    b.HasIndex("Team2Id");
+
+                    b.ToTable("Fixtures");
                 });
 
             modelBuilder.Entity("PgccApi.Entities.NewsItem", b =>
@@ -126,6 +174,27 @@ namespace PgccApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("PgccApi.Entities.Fixture", b =>
+                {
+                    b.HasOne("PgccApi.Entities.Competition", "Competition")
+                        .WithMany()
+                        .HasForeignKey("CompetitionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("PgccApi.Entities.Season", "Season")
+                        .WithMany()
+                        .HasForeignKey("SeasonId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("PgccApi.Entities.Rink", "Team1")
+                        .WithMany()
+                        .HasForeignKey("Team1Id");
+
+                    b.HasOne("PgccApi.Entities.Rink", "Team2")
+                        .WithMany()
+                        .HasForeignKey("Team2Id");
                 });
 
             modelBuilder.Entity("PgccApi.Entities.Rink", b =>

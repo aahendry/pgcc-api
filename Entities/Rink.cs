@@ -10,7 +10,7 @@ namespace PgccApi.Entities
         public string Third { get; set; }
         public string Second { get; set; }
         public string Lead { get; set; }
-        [Column(TypeName = "bit")]
+        //[Column(TypeName = "bit")]
         public bool WasWinningRink { get; set; }
 
         public Season Season { get; set; }

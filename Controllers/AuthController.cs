@@ -20,7 +20,6 @@ namespace PgccApi.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody]LoginModel userParam)
         {
-            var x = ModelState;
             var user = _userService.Authenticate(userParam.Username, userParam.Password);
 
             if (user == null)

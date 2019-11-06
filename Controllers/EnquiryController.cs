@@ -9,6 +9,7 @@ using PgccApi.Models;
 using PgccApi.Entities;
 using PgccApi.Services;
 using AutoMapper;
+using PgccApi.Models.ViewModels;
 
 namespace PgccApi.Controllers
 {
@@ -32,14 +33,16 @@ namespace PgccApi.Controllers
         // GET: api/Enquiry
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Enquiry>>> GetAll()
+        public async Task<ActionResult<IEnumerable<EnquiryViewModel>>> GetAll()
         {
-            return await _context.Enquiries.OrderByDescending(o => o.When).ToListAsync();
+            var query = _context.Enquiries.OrderByDescending(o => o.When);
+
+            return await _mapper.ProjectTo<EnquiryViewModel>(query).ToListAsync();
         }
 
         // POST: api/Enquiry
         [HttpPost]
-        public async Task<ActionResult<Enquiry>> Post(EnquiryModel item)
+        public async Task<ActionResult<EnquiryViewModel>> Post(EnquiryModel item)
         {
             var enquiry = _mapper.Map<Enquiry>(item);
 

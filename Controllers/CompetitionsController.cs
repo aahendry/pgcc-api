@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using PgccApi.Models;
 using PgccApi.Entities;
+using AutoMapper;
+using PgccApi.Models.ViewModels;
 
 namespace PgccApi.Controllers
 {
@@ -14,23 +16,27 @@ namespace PgccApi.Controllers
     public class CompetitionsController : ControllerBase
     {
         private readonly PgccContext _context;
+        private readonly IMapper _mapper;
 
-        public CompetitionsController(PgccContext context)
+        public CompetitionsController(PgccContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Competitions
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Competition>>> GetAll()
+        public async Task<ActionResult<IEnumerable<CompetitionViewModel>>> GetAll()
         {
-            return await _context.Competitions.OrderBy(o => o.Name).ToListAsync();
+            var query = _context.Competitions.OrderBy(o => o.Name);
+
+            return await _mapper.ProjectTo<CompetitionViewModel>(query).ToListAsync();
         }
 
         // GET: api/Competitions/5
         [Authorize]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Competition>> Get(long id)
+        public async Task<ActionResult<CompetitionViewModel>> Get(long id)
         {
             var competition = await _context.Competitions.FindAsync(id);
 
@@ -39,31 +45,38 @@ namespace PgccApi.Controllers
                 return NotFound();
             }
 
-            return competition;
+            return _mapper.Map<CompetitionViewModel>(competition);
         }
 
         // POST: api/Competitions
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<Competition>> Post(Competition item)
+        public async Task<ActionResult<CompetitionViewModel>> Post(CompetitionPostModel model)
         {
+            var item = _mapper.Map<Competition>(model);
+
             _context.Competitions.Add(item);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
+            return CreatedAtAction(nameof(Get), new { id = item.Id }, _mapper.Map<CompetitionViewModel>(item));
         }
 
         // PUT: api/Competitions/5
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(long id, Competition item)
+        public async Task<IActionResult> Put(long id, CompetitionPutModel model)
         {
-            if (id != item.Id)
+            var item = await _context.Competitions.FindAsync(id);
+
+            if(item == null)
             {
                 return BadRequest();
             }
 
-            _context.Entry(item).State = EntityState.Modified;
+            item.Name = model.Name;
+            item.Blurb = model.Blurb;
+
+            _context.Competitions.Update(item);
             await _context.SaveChangesAsync();
 
             return NoContent();
