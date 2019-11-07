@@ -8,6 +8,7 @@ using PgccApi.Models;
 using PgccApi.Entities;
 using AutoMapper;
 using PgccApi.Models.ViewModels;
+using PgccApi.Services;
 
 namespace PgccApi.Controllers
 {
@@ -17,11 +18,13 @@ namespace PgccApi.Controllers
     {
         private readonly PgccContext _context;
         private readonly IMapper _mapper;
+        private readonly ICompetitionService _competitionService;
 
-        public CompetitionsController(PgccContext context, IMapper mapper)
+        public CompetitionsController(PgccContext context, IMapper mapper, ICompetitionService competitionService)
         {
             _context = context;
             _mapper = mapper;
+            _competitionService = competitionService;
         }
 
         // GET: api/Competitions
@@ -98,6 +101,22 @@ namespace PgccApi.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        // GET: api/Competitions/Table/5
+        [HttpGet("table/{id}")]
+        public async Task<ActionResult<IEnumerable<CompetitionTableRowViewModel>>> GetTable(long id)
+        {
+            var competition = await _context.Competitions.FindAsync(id);
+
+            if (competition == null || !competition.HasLeagueTable)
+            {
+                return NotFound();
+            }
+
+            var table = await _competitionService.GenerateTable(competition);
+
+            return table;
         }
     }
 }
