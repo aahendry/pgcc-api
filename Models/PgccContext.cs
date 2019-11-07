@@ -24,7 +24,7 @@ namespace PgccApi.Models
         {
             base.OnModelCreating(modelBuilder);
 
-            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            /*foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
                 foreach (var property in entityType.GetProperties())
                 {
@@ -33,11 +33,11 @@ namespace PgccApi.Models
                         property.SetValueConverter(new BoolToIntConverter());
                     }
                 }
-            }
+            }*/
         }
     }
 
-    public class BoolToIntConverter : ValueConverter<bool, int>
+    /*public class BoolToIntConverter : ValueConverter<bool, int>
     {
         public BoolToIntConverter(ConverterMappingHints mappingHints = null)
             : base(
@@ -49,5 +49,5 @@ namespace PgccApi.Models
 
         public static ValueConverterInfo DefaultInfo { get; }
             = new ValueConverterInfo(typeof(bool), typeof(int), i => new BoolToIntConverter(i.MappingHints));
-    }
+    }*/
 }

@@ -81,6 +81,7 @@ namespace PgccApi.Controllers
             item.When = model.When;
             item.Round = model.Round;
             item.IsFinal = model.IsFinal;
+            item.ManOfTheMatch = model.ManOfTheMatch;
             item.Shots1 = model.Shots1;
             item.Shots2 = model.Shots2;
             item.Ends1 = model.Ends1;

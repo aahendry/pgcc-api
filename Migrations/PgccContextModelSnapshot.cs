@@ -14,7 +14,8 @@ namespace PgccApi.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("PgccApi.Entities.Competition", b =>
                 {
@@ -61,6 +62,10 @@ namespace PgccApi.Migrations
 
                     b.Property<int?>("Ends2");
 
+                    b.Property<bool>("IsFinal");
+
+                    b.Property<string>("ManOfTheMatch");
+
                     b.Property<string>("Round");
 
                     b.Property<long>("SeasonId");
@@ -78,8 +83,6 @@ namespace PgccApi.Migrations
                     b.Property<string>("Team2OtherName");
 
                     b.Property<DateTime>("When");
-
-                    b.Property<bool>("isFinal");
 
                     b.HasKey("Id");
 
@@ -99,8 +102,7 @@ namespace PgccApi.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<short>("IsVisible")
-                        .HasColumnType("bit");
+                    b.Property<bool>("IsVisible");
 
                     b.Property<string>("Text");
 
@@ -130,7 +132,7 @@ namespace PgccApi.Migrations
 
                     b.Property<string>("Third");
 
-                    b.Property<short>("WasWinningRink")
+                    b.Property<bool>("WasWinningRink")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");

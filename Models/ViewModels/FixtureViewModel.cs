@@ -18,6 +18,7 @@ namespace PgccApi.Models.ViewModels
         public DateTime When { get; set; }
         public string Round { get; set; }
         public bool isFinal { get; set; }
+        public string ManOfTheMatch { get; set; }
 
 
         public RinkViewModel Team1 { get; set; }

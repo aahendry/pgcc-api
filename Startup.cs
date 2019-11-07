@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,6 +12,7 @@ using PgccApi.Helpers;
 using PgccApi.Services;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace PgccApi
 {
@@ -42,7 +44,12 @@ namespace PgccApi
                 });
             });
 
-            services.AddDbContext<PgccContext>(opt => opt.UseMySql(Configuration.GetConnectionString("pgcc")));
+            services.AddDbContext<PgccContext>(opt => 
+            opt.UseMySql(Configuration.GetConnectionString("pgcc"),
+                mySqlOptions =>
+                {
+                    mySqlOptions.ServerVersion(new Version(8, 0, 18), ServerType.MySql); // replace with your Server Version and Type
+                }));
             services.AddAutoMapper(typeof(Startup));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 

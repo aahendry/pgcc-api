@@ -21,8 +21,8 @@ namespace PgccApi.Entities
 
         public DateTime When { get; set; }
         public string Round { get; set; }
-        //[Column(TypeName = "bit")]
         public bool IsFinal { get; set; }
+        public string ManOfTheMatch { get; set; }
 
 
         public Rink Team1 { get; set; }
