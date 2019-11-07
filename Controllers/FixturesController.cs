@@ -66,6 +66,47 @@ namespace PgccApi.Controllers
             return CreatedAtAction(nameof(Get), new { id = item.Id }, _mapper.Map<FixtureViewModel>(item));
         }
 
+        // POST: api/Fixtures/5
+        [Authorize]
+        [HttpPost("{id}")]
+        public async Task<ActionResult<FixtureViewModel>> PostCopy(long id)
+        {
+            var item = await _context.Fixtures
+                .Include(o => o.Competition)
+                .Include(o => o.Season)
+                .Include(o => o.Team1)
+                .Include(o => o.Team2)
+                .FirstOrDefaultAsync(o => o.Id == id);
+
+            if (item == null)
+            {
+                return BadRequest();
+            }
+
+            var newItem = new Fixture
+            {
+                SeasonId = item.SeasonId,
+                CompetitionId = item.CompetitionId,
+                Team1Id = item.Team1Id,
+                Team2Id = item.Team2Id,
+                Team1OtherName = item.Team1OtherName,
+                Team2OtherName = item.Team2OtherName,
+                Shots1 = item.Shots1,
+                Shots2 = item.Shots2,
+                Ends1 = item.Ends1,
+                Ends2 = item.Ends2,
+                When = item.When,
+                Round = item.Round,
+                IsFinal = item.IsFinal,
+                ManOfTheMatch = item.ManOfTheMatch
+            };
+
+            _context.Fixtures.Add(newItem);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(Get), new { id = newItem.Id }, _mapper.Map<FixtureViewModel>(newItem));
+        }
+
         // PUT: api/Fixtures/5
         [Authorize]
         [HttpPut("{id}")]
