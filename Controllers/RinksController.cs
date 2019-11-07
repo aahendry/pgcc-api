@@ -90,7 +90,8 @@ namespace PgccApi.Controllers
                 .Where(o =>
                     o.WasWinningRink == true &&
                     o.SeasonId == item.SeasonId &&
-                    o.CompetitionId == item.CompetitionId)
+                    o.CompetitionId == item.CompetitionId &&
+                    o.Id != item.Id)
                 .Count();
 
             if(existingWinningRinks > 0)
