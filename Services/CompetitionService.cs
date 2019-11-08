@@ -84,7 +84,7 @@ namespace PgccApi.Services
                 }
             }
 
-            return table.OrderByDescending(o => o.Points).ThenByDescending(o => o.Shots).ThenByDescending(o => o.EndsWon).ToList();
+            return table.OrderByDescending(o => o.Points).ThenByDescending(o => o.EndsWon).ThenByDescending(o => o.Shots).ToList();
         }
     }
 }

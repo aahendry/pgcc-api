@@ -19,6 +19,9 @@ namespace PgccApi.Mapper
             CreateMap<CompetitionPostModel, Competition>()
                 .ForMember(o => o.Id, opt => opt.Ignore());
 
+            CreateMap<SeasonModel, Season>()
+                .ForMember(o => o.Id, opt => opt.Ignore());
+
             // Outbound
             CreateMap<Competition, CompetitionViewModel>();
             CreateMap<Enquiry, EnquiryViewModel>();
