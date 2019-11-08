@@ -36,6 +36,15 @@ namespace PgccApi.Controllers
             return await _mapper.ProjectTo<CompetitionViewModel>(query).ToListAsync();
         }
 
+        // GET: api/Competitions/Leagues
+        [HttpGet("leagues/")]
+        public async Task<ActionResult<IEnumerable<CompetitionViewModel>>> GetAllLeagues()
+        {
+            var query = _context.Competitions.Where(o => o.HasLeagueTable).OrderBy(o => o.Name);
+
+            return await _mapper.ProjectTo<CompetitionViewModel>(query).ToListAsync();
+        }
+
         // GET: api/Competitions/5
         [Authorize]
         [HttpGet("{id}")]

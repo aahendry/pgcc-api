@@ -84,22 +84,6 @@ namespace PgccApi.Controllers
             return CreatedAtAction(nameof(Get), new { id = item.Id }, _mapper.Map<RinkViewModel>(item));
         }
 
-        private void EnsureOnlyOneWinningRink(Rink item)
-        {
-            var existingWinningRinks = _context.Rinks
-                .Where(o =>
-                    o.WasWinningRink == true &&
-                    o.SeasonId == item.SeasonId &&
-                    o.CompetitionId == item.CompetitionId &&
-                    o.Id != item.Id)
-                .Count();
-
-            if(existingWinningRinks > 0)
-            {
-                throw new Exception("Already a winning rink for this season and competition.");
-            }
-        }
-
         // PUT: api/Rinks/5
         [Authorize]
         [HttpPut("{id}")]
@@ -145,6 +129,22 @@ namespace PgccApi.Controllers
                 .OrderByDescending(o => o.Season.Name);
 
             return await _mapper.ProjectTo<RinkViewModel>(rinks).ToListAsync();
+        }
+
+        private void EnsureOnlyOneWinningRink(Rink item)
+        {
+            var existingWinningRinks = _context.Rinks
+                .Where(o =>
+                    o.WasWinningRink == true &&
+                    o.SeasonId == item.SeasonId &&
+                    o.CompetitionId == item.CompetitionId &&
+                    o.Id != item.Id)
+                .Count();
+
+            if (existingWinningRinks > 0)
+            {
+                throw new Exception("Already a winning rink for this season and competition.");
+            }
         }
     }
 }

@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using PgccApi.Models;
 using PgccApi.Entities;
+using PgccApi.Models.ViewModels;
+using AutoMapper;
 
 namespace PgccApi.Controllers
 {
@@ -14,10 +16,12 @@ namespace PgccApi.Controllers
     public class SeasonsController : ControllerBase
     {
         private readonly PgccContext _context;
+        private readonly IMapper _mapper;
 
-        public SeasonsController(PgccContext context)
+        public SeasonsController(PgccContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Seasons/current
@@ -52,25 +56,31 @@ namespace PgccApi.Controllers
         // POST: api/Seasons
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<Season>> Post(Season item)
+        public async Task<ActionResult<Season>> Post(SeasonModel model)
         {
+            var item = _mapper.Map<Season>(model);
+
             _context.Seasons.Add(item);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
+            return CreatedAtAction(nameof(Get), new { id = item.Id }, _mapper.Map<SeasonViewModel>(item));
         }
 
         // PUT: api/Seasons/5
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(long id, Season item)
+        public async Task<IActionResult> Put(long id, SeasonModel model)
         {
-            if (id != item.Id)
+            var item = await _context.Seasons.FindAsync(id);
+
+            if (item == null)
             {
                 return BadRequest();
             }
 
-            _context.Entry(item).State = EntityState.Modified;
+            item.Name = model.Name;
+
+            _context.Seasons.Update(item);
             await _context.SaveChangesAsync();
 
             return NoContent();
