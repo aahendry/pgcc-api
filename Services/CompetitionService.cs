@@ -35,17 +35,22 @@ namespace PgccApi.Services
                 throw new Exception("No Seasons found.");
             }
 
-            var table = await _context.Rinks
-                .Include(o => o.Season)
-                .Include(o => o.Competition)
-                .Where(o => o.CompetitionId == competition.Id && o.SeasonId == currentSeason.Id).Select(o => new CompetitionTableRowViewModel { Rink = _mapper.Map<RinkViewModel>(o) }).ToListAsync();
-
             var fixtures = await _context.Fixtures
                 .Include(o => o.Team1)
                 .Include(o => o.Team2)
                 .Include(o => o.Season)
                 .Include(o => o.Competition)
                 .Where(o => o.CompetitionId == competition.Id && o.SeasonId == currentSeason.Id && !o.IsFinal).ToListAsync();
+
+            if(fixtures.Count < 1)
+            {
+                return new List<CompetitionTableRowViewModel>();
+            }
+
+            var table = await _context.Rinks
+                .Include(o => o.Season)
+                .Include(o => o.Competition)
+                .Where(o => o.CompetitionId == competition.Id && o.SeasonId == currentSeason.Id).Select(o => new CompetitionTableRowViewModel { Rink = _mapper.Map<RinkViewModel>(o) }).ToListAsync();
 
             foreach(var fixture in fixtures)
             {
