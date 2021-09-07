@@ -12,6 +12,7 @@ using PgccApi.Services;
 using System;
 using System.Text;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace PgccApi
 {
@@ -36,7 +37,12 @@ namespace PgccApi
                 builder =>
                 {
                     builder
-                    .WithOrigins("https://www.portglasgowcurlingclub.co.uk", "https://portglasgowcurlingclub.co.uk", "http://localhost:8080")
+                    .WithOrigins(
+                        "https://www.portglasgowcurlingclub.co.uk",
+                        "https://portglasgowcurlingclub.co.uk",
+                        "https://www.portglasgowcurlingclub.com",
+                        "https://portglasgowcurlingclub.com",
+                        "http://localhost:8080")
                     //.AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod()
@@ -83,6 +89,11 @@ namespace PgccApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -92,6 +103,8 @@ namespace PgccApi
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseHttpsRedirection();
 
             app.UseAuthentication();
             app.UseRouting();
