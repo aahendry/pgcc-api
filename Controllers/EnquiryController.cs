@@ -48,6 +48,7 @@ namespace PgccApi.Controllers
 
             if (_enquiryService.Validate(item.RecaptchaToken))
             {
+                enquiry.When = DateTime.UtcNow;
                 _context.Enquiries.Add(enquiry);
                 await _context.SaveChangesAsync();
             }

@@ -1,18 +1,18 @@
-﻿using System;
-using System.Text;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using PgccApi.Models;
 using PgccApi.Helpers;
+using PgccApi.Models;
 using PgccApi.Services;
-using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using System;
+using System.Text;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace PgccApi
 {
@@ -30,13 +30,19 @@ namespace PgccApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
             services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins,
                 builder =>
                 {
                     builder
-                    .WithOrigins("https://www.portglasgowcurlingclub.co.uk", "https://portglasgowcurlingclub.co.uk", "http://localhost:8080")
+                    .WithOrigins(
+                        "https://www.portglasgowcurlingclub.co.uk",
+                        "https://portglasgowcurlingclub.co.uk",
+                        "https://www.portglasgowcurlingclub.com",
+                        "https://portglasgowcurlingclub.com",
+                        "http://localhost:8080")
                     //.AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod()
@@ -44,14 +50,10 @@ namespace PgccApi
                 });
             });
 
-            services.AddDbContext<PgccContext>(opt => 
-            opt.UseMySql(Configuration.GetConnectionString("pgcc"),
-                mySqlOptions =>
-                {
-                    mySqlOptions.ServerVersion(new Version(8, 0, 18), ServerType.MySql); // replace with your Server Version and Type
-                }));
+            services.AddDbContext<PgccContext>(opt =>
+            opt.UseMySql(Configuration.GetConnectionString("pgcc"), new MySqlServerVersion(new Version(8, 0, 18))));
             services.AddAutoMapper(typeof(Startup));
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc();
 
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
@@ -85,8 +87,13 @@ namespace PgccApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -97,9 +104,17 @@ namespace PgccApi
                 app.UseHsts();
             }
 
+            app.UseHttpsRedirection();
+
             app.UseAuthentication();
+            app.UseRouting();
+            app.UseAuthorization();
             app.UseCors(MyAllowSpecificOrigins);
-            app.UseMvc();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute("default", "{controller=news}/{action=visible}");
+            });
         }
     }
 }
